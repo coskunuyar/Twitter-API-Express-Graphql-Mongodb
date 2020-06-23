@@ -1,5 +1,7 @@
 const express = require('express');
-const app = express();
+const graphqlHTTP = require('express-graphql');
+const schema = require('./graph/index');
 
-app.use('/',(req,res) => res.json({message: "Hello World!"}));
+const app = express();
+app.use('/',graphqlHTTP({ schema , graphiql: true }));
 app.listen(4000 , () => console.log('Running on port 4000'));
