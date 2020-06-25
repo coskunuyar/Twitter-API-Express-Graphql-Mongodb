@@ -1,4 +1,5 @@
-const  {UserType , TweetType} = require('./schema');
+const { User , Tweet } = require('../models/index');
+const { UserType , TweetType } = require('./schema');
 const { GraphQLObjectType, GraphQLID, GraphQLList } = require('graphql');
 const { users, tweets } = require('../dummy-data');
 
@@ -9,26 +10,26 @@ module.exports =  new GraphQLObjectType({
             type: UserType,
             args: { id: { type: GraphQLID }},
             resolve(parent,args){
-                return users.filter(user => user.id === args.id);
+                return User.findById(args.id);
             }
         },
         users: {
             type: new GraphQLList(UserType),
             resolve(parent,args){
-                return users;
+                return User.find();
             }
         },
         tweet: {
             type: TweetType,
             args: {id: { type: GraphQLID }},
             resolve(parent,args){
-                return tweets.filter(tweet => tweet.id === args.id);
+                return Tweet.findById(args.id);
             }
         },
         tweets: {
             type: new GraphQLList(TweetType),
             resolve(parent,args){
-                return tweets;
+                return Tweet.find();
             }
         }
     }

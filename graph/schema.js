@@ -1,3 +1,4 @@
+const { User , Tweet } = require('../models/index');
 const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLList } = require("graphql");
 const { users, tweets } = require('../dummy-data');
 
@@ -9,13 +10,13 @@ const UserType = new GraphQLObjectType({
         tweets: {
             type: new GraphQLList(TweetType),
             resolve(parent,args){
-                return tweets.filter( tweet => tweet.ownerId === parent.id);
+                return Tweet.find().where('ownerId').equals(parent.id);
             }
         },
         reTweets: {
             type: new GraphQLList(TweetType),
             resolve(parent,args){
-                return tweets.filter(tweet => tweet.reTweetedBy.includes(parent.id));
+                return Tweet.find().where('reTweetedBy').in(parent.id);
             }
         }
     })
@@ -29,13 +30,13 @@ const TweetType = new GraphQLObjectType({
         owner: {
             type: UserType,
             resolve(parent,args){
-                return users.filter(user => user.id === parent.ownerId )[0];
+                return User.findById(parent.ownerId);
             }
         },
         reTweetedBy: {
             type: new GraphQLList(UserType),
             resolve(parent,args){
-                return users.filter(user => parent.reTweetedBy.includes(user.id));
+                return User.find().where("_id").in(parent.reTweetedBy);
             }
         }
     })
