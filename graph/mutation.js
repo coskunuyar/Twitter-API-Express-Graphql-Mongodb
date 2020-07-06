@@ -37,6 +37,15 @@ module.exports = new GraphQLObjectType({
                 tweet.reTweetedBy.push(args.userId);
                 return tweet.save();
             }
+        },
+        deleteTweet: {
+            type: TweetType,
+            args: {
+                tweetId: { type: GraphQLID }
+            },
+            async resolve(parent,args){
+                return await Tweet.findByIdAndDelete(args.tweetId);
+            }
         }
     }
 })
